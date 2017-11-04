@@ -48,6 +48,8 @@ void handleRoot()
   
   server.send(200, "text/html", mainPage);
 
+  Serial.print ("Main Page size ");
+  Serial.println (strlen (mainPage));
 }
 
 void handleHelp(){
@@ -55,7 +57,8 @@ void handleHelp(){
 }
 
 
-void setup() {
+void setup() 
+{
   // put your setup code here, to run once:
   Serial.begin (115200);
 
@@ -67,7 +70,7 @@ void setup() {
     server.on("/", handleRoot);
     server.on("/help", handleHelp);
     server.begin();
-    Serial.println("HTTP server beginned");
+    Serial.println("HTTP server started");
 }
 
 void loop() {
