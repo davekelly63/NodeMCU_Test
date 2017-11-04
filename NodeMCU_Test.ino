@@ -15,7 +15,7 @@
  *  
  */
 
-const char *ssid = "arduino-er";
+const char *ssid = "NodeMCU_AP";
 const char *password = "password";
 
 ESP8266WebServer server(80);
@@ -24,8 +24,30 @@ char* htmlBody_help = "<h1>Help</h1><br/>\n"
   "Visit http://192.168.4.1/ to access web server.<br/>\n"
   "Visit http://192.168.4.1/help to access this page.<br/>\n";
 
-void handleRoot() {
-    server.send(200, "text/html", "<h1>Hello! from arduino-er!</h1>");
+char* mainPageHeader = "<h1>NodeMCU Access Configuration</H1>";
+
+void handleRoot() 
+{
+  char mainPage [1024];
+  char line [250];
+  
+  sprintf(mainPage, "%s<br>Choose Network<select>\n", mainPageHeader);
+  uint8_t numSsid = WiFi.scanNetworks();
+    // print the network number and name for each network found:
+  for (int thisNet = 0; thisNet < numSsid; thisNet++) 
+  {
+
+    sprintf (line, "   <option value =\"%s\">%s</option>\n", WiFi.SSID(thisNet).c_str(), WiFi.SSID(thisNet).c_str());
+    strcat (mainPage, line);
+  }
+  sprintf (line, "</select><br>");
+  strcat (mainPage, line);
+
+  sprintf (line, "\nPassword:<input type=\"text\" name=\"password\"><br>\n<input type=\"submit\" value=\"Select\"><br>");
+  strcat (mainPage, line);
+  
+  server.send(200, "text/html", mainPage);
+
 }
 
 void handleHelp(){
@@ -61,7 +83,8 @@ void listNetworks() {
   // scan for nearby networks:
   Serial.println("** Scan Networks **");
   int numSsid = WiFi.scanNetworks();
-  if (numSsid == -1) {
+  if (numSsid == -1) 
+  {
     Serial.println("Couldn't get a wifi connection");
     while (true);
   }
@@ -71,7 +94,8 @@ void listNetworks() {
   Serial.println(numSsid);
 
   // print the network number and name for each network found:
-  for (int thisNet = 0; thisNet < numSsid; thisNet++) {
+  for (int thisNet = 0; thisNet < numSsid; thisNet++) 
+  {
     Serial.print(thisNet);
     Serial.print(") ");
     Serial.print(WiFi.SSID(thisNet));
