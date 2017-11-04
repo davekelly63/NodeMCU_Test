@@ -28,28 +28,28 @@ char* mainPageHeader = "<h1>NodeMCU Access Configuration</H1>";
 
 void handleRoot() 
 {
-  char mainPage [1024];
-  char line [250];
+  String mainPage;
   
-  sprintf(mainPage, "%s<br>Choose Network<select>\n", mainPageHeader);
+  mainPage = mainPageHeader;
+  mainPage += "<br>Choose Network<select>\n";
   uint8_t numSsid = WiFi.scanNetworks();
-    // print the network number and name for each network found:
+  // print the network number and name for each network found:
   for (int thisNet = 0; thisNet < numSsid; thisNet++) 
   {
-
-    sprintf (line, "   <option value =\"%s\">%s</option>\n", WiFi.SSID(thisNet).c_str(), WiFi.SSID(thisNet).c_str());
-    strcat (mainPage, line);
+    mainPage += "   <option value =\"";
+    mainPage += WiFi.SSID(thisNet).c_str();
+    mainPage += "\">";
+    mainPage += WiFi.SSID(thisNet).c_str();
+    mainPage += "</option>\n";
   }
-  sprintf (line, "</select><br>");
-  strcat (mainPage, line);
+  mainPage += "</select><br>";
 
-  sprintf (line, "\nPassword:<input type=\"text\" name=\"password\"><br>\n<input type=\"submit\" value=\"Select\"><br>");
-  strcat (mainPage, line);
+  mainPage += "\nPassword:<input type=\"text\" name=\"password\"><br><br>\n<input type=\"submit\" value=\"Select\"><br>";
   
   server.send(200, "text/html", mainPage);
 
   Serial.print ("Main Page size ");
-  Serial.println (strlen (mainPage));
+  Serial.println (mainPage.length());
 }
 
 void handleHelp(){
